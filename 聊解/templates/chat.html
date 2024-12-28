@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信风格聊天页面</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+    <style>
+        /* 额外的样式 */
+        .emoji-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+            display: none; /* Initially hidden */
+            transition: all 0.3s ease; /* Add smooth transition for show/hide */
+        }
+        .emoji-picker img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .emoji-toggle {
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 5px;
+            margin-left: 10px;
+            display: inline-block;
+        }
+        .chat-input button[disabled] {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 25%;
+            background: #f4f4f4;
+            padding: 10px;
+        }
+        .chat-area {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        .chat-messages {
+            overflow-y: auto;
+            flex: 1;
+            margin-bottom: 10px;
+        }
+        .message-bubble {
+            background-color: #e0e0e0;
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            max-width: 60%;
+        }
+        .message-bubble img {
+            max-width: 100%;
+        }
+        .me {
+            align-self: flex-end;
+        }
+        .friend {
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- 左侧好友列表 -->
+        <div class="sidebar">
+            <div class="sidebar-header">好友列表</div>
+            <ul class="friend-list">
+                {% for friend in friends %}
+                <li>
+                    <a href="{{ url_for('chat_with_friend', friend_id=friend[0]) }}">{{ friend[1] }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- 右侧聊天区域 -->
+        <div class="chat-area">
+            {% if friend_username %}
+            <div class="chat-header">{{ friend_username }}</div>
+            <div class="chat-messages" id="messages">
+                <ul>
+                    {% for message in messages %}
+                    <li class="{{ 'me' if message[1] == session['user_id'] else 'friend' }}">
+                        <div class="message-bubble">
+                            {% if message[0].startswith('emoji:') %}
+                            <img src="{{ url_for('static', filename='uploads/' + message[0][6:]) }}" alt="表情包">
+                            {% else %}
+                            <p>{{ message[0] }}</p>
+                            {% endif %}
+                            <small>{{ message[2] }}</small>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- 消息输入区域 -->
+            <div class="chat-input">
+                <form method="POST" action="{{ url_for('chat_with_friend', friend_id=friend_id) }}" enctype="multipart/form-data">
+                    <input type="text" name="message" id="messageInput" placeholder="请输入消息..." oninput="toggleSendButton()">
+                    
+                    <!-- 表情包选择按钮 -->
+                    <span class="emoji-toggle" id="emojiToggle">😊</span>
+                    
+                    <button type="submit" id="sendButton" disabled>发送</button>
+                </form>
+            </div>
+
+            <!-- 表情包选择区域 -->
+            <div class="emoji-picker" id="emojiPicker">
+                {% for emoji in emojis %}
+                <img src="{{ url_for('static', filename='uploads/' + emoji[0]) }}" alt="表情包" class="emoji" data-emoji="{{ emoji[0] }}">
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <div class="chat-placeholder">请选择一个好友开始聊天</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // 选择表情包并插入到输入框中
+        document.querySelectorAll('.emoji').forEach(emoji => {
+            emoji.addEventListener('click', function() {
+                const emojiSrc = this.getAttribute('data-emoji');
+                const messageInput = document.getElementById('messageInput');
+                messageInput.value += 'emoji:' + emojiSrc; // 插入表情包标识
+                messageInput.focus(); // Focus back to the input box after emoji selection
+                toggleSendButton(); // Enable send button
+            });
+        });
+
+        // 切换表情包选择区域的显示
+        document.getElementById('emojiToggle').addEventListener('click', function() {
+            const emojiPicker = document.getElementById('emojiPicker');
+            emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'flex' : 'none';
+        });
+
+        // 启用/禁用发送按钮
+        function toggleSendButton() {
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = !messageInput.value.trim(); // Disable button if no message
+        }
+    </script>
+</body>
+</html>

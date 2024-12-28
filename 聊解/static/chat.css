@@ -1,0 +1,187 @@
+* /* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #EFEFEF;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 整体布局 */
+.chat-container {
+    width: 90%;
+    height: 90vh;
+    display: flex;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    flex-direction: row;
+}
+
+/* 左侧好友列表 */
+.sidebar {
+    width: 30%;
+    background-color: #F5F5F5;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #EDEDED;
+    border-bottom: 1px solid #ddd;
+}
+
+.friend-list {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.friend-list li {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.friend-list li:hover {
+    background-color: #EAEAEA;
+    transform: scale(1.02);
+}
+
+.friend-list li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    font-size: 16px;
+}
+
+/* 右侧聊天区域 */
+.chat-area {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    background-color: #F5F5F5;
+}
+
+.chat-header {
+    padding: 15px;
+    background-color: #EDEDED;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #EFEFEF;
+    margin-bottom: 15px;
+}
+
+.chat-messages ul {
+    list-style: none;
+}
+
+.chat-messages li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.message-bubble {
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+.friend .message-bubble {
+    background-color: #EAEAEA;
+    margin-right: auto;
+}
+
+.me .message-bubble {
+    background-color: #DCF8C6;
+    margin-left: auto;
+}
+
+/* 输入框 */
+.chat-input {
+    padding: 10px;
+    display: flex;
+    border-top: 1px solid #ddd;
+    background-color: white;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.chat-input button {
+    padding: 10px 20px;
+    background-color: #33B864;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #2CA354;
+}
+
+/* 占位文本样式 */
+.chat-placeholder {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    font-size: 18px;
+}
+
+/* 响应式布局优化 */
+@media (max-width: 768px) {
+    .chat-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .chat-area {
+        width: 100%;
+    }
+}

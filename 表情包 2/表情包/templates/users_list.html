@@ -1,0 +1,21 @@
+<!-- templates/users_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users List</title>
+</head>
+<body>
+    <h1>All Usernames</h1>
+    <!-- templates/users_list.html -->
+            <ul>
+                {% for user in users %}
+                    <li><a href="{{ url_for('chat', receiver_id=user.id) }}">{{ user.username }}</a></li>
+                {% endfor %}
+            </ul>
+
+    <a href="{{ url_for('chat') }}">Go To Talk</a>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

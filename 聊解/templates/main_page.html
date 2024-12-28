@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+</head>
+<body>
+    <h1>所有用户</h1>
+    <ul>
+        {% for user in users %}
+            {% if user and user[0] is not none and user[1] is not none %}
+                <li>
+                    <!-- 添加好友的表单 -->
+                    <form action="{{ url_for('add_friend') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="friend_id" value="{{ user[0] }}">
+                        <button type="submit">添加 {{ user[1] }} 为好友</button>
+                    </form>
+                    <!-- 链接到聊天界面 -->
+                    <a href="{{ url_for('chat_with_friend', friend_id=user[0]) }}">Chat ({{ user[0] }})</a>
+                </li>
+            {% else %}
+                <li>用户数据无效，无法显示。</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</body>
+</html>
