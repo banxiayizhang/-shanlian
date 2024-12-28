@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊解 - 与 {{ receiver_username }} 的聊天</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/sidebar.css')}}">
+</head>
+<body>
+    <div id="container">
+        <!-- 侧边栏 -->
+       <nav class="sidebar">
+           <div class="profile">
+            <img src="{{ url_for('static', filename='img/qingwalogo.jpg') }}" alt="Profile Picture" id="sidebar-avatar">
+               <h2>{{ username if username else "Guest" }}</h2>
+           </div>
+           <ul>
+               <li><a href="{{ url_for('index') }}">首页</a></li>
+               <li><a href="{{ url_for('personal') }}">个人中心</a></li>
+               <li><a href="{{ url_for('shanlian') }}">汕恋</a></li>
+               <li><a href="{{ url_for('chat') }}">聊解</a></li>
+               <li><a href="{{url_for('blindbox')}}">盲盒交友</a></li>
+               {% if username %}
+                   <li><a href="{{ url_for('logout') }}">注销</a></li>
+               {% else %}
+                   <li><a href="{{ url_for('login') }}">登录</a></li>
+                   <li><a href="{{ url_for('register') }}">注册</a></li>
+               {% endif %}
+           </ul>
+       </nav>
+    </div>
+
+    <div class="container1">
+        <div class="sidebar1">
+            <h2>聊天列表</h2>
+            <!-- 好友列表 -->
+            <h3>好友列表</h3>
+            <ul id="friend-list" class="friend-list">
+                {% for friend in friends %}
+                    <li data-chat-id="{{ friend.id }}">
+                        <span class="friend-item">{{ friend.username }}</span>
+                    </li>
+                {% endfor %}
+            </ul>   
+
+            <form id="addFriendForm" onsubmit="event.preventDefault(); addFriend();">
+                <input type="text" id="phone_number" placeholder="输入好友手机号" required>
+                <button type="submit">添加好友</button>
+            </form>                                  
+        </div>
+
+        <div class="chat-area">
+            <div class="chat-header" id="chat-header">
+                <h3>选择聊天对象</h3>
+                {% if receiver_username %}
+                    <h3>与 {{ receiver_username }} 的聊天</h3>
+                {% endif %}
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message">
+                            <p>{{ message.content }}</p>
+                            <span>{{ message.timestamp }}</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>没有聊天记录</p>
+                {% endif %}
+            </div>
+
+            <form method="POST" action="/chat?receiver_id={{ receiver_id }}" class="chat-input" onsubmit="sendMessage(event)">
+                <button type="button" class="emoji-button" onclick="toggleEmojiPicker()">😊</button>
+                <div class="emoji-picker" id="emoji-picker">
+                    <!-- 表情符号 -->
+                    <span onclick="addEmoji('😀')">😀</span>
+                    <span onclick="addEmoji('😁')">😁</span>
+                    <span onclick="addEmoji('😂')">😂</span>
+                    <span onclick="addEmoji('🤣')">🤣</span>
+                    <span onclick="addEmoji('😃')">😃</span>
+                    <span onclick="addEmoji('😄')">😄</span>
+                    <span onclick="addEmoji('😆')">😆</span>
+                    <span onclick="addEmoji('😅')">😅</span><br>
+    
+                    <span onclick="addEmoji('😜')">😜</span>
+                    <span onclick="addEmoji('😝')">😝</span>
+                    <span onclick="addEmoji('😛')">😛</span>
+                    <span onclick="addEmoji('😎')">😎</span>
+                    <span onclick="addEmoji('🤓')">🤓</span>
+                    <span onclick="addEmoji('🤗')">🤗</span>
+                    <span onclick="addEmoji('😺')">😺</span>
+                    <span onclick="addEmoji('😻')">😻</span><br>
+    
+                    <span onclick="addEmoji('😽')">😽</span>
+                    <span onclick="addEmoji('😾')">😾</span>
+                    <span onclick="addEmoji('🤠')">🤠</span>
+                    <span onclick="addEmoji('😈')">😈</span>
+                    <span onclick="addEmoji('👿')">👿</span>
+                    <span onclick="addEmoji('😜')">😜</span>
+                    <span onclick="addEmoji('😤')">😤</span>
+                    <span onclick="addEmoji('😱')">😱</span><br>
+    
+                    <span onclick="addEmoji('😳')">😳</span>
+                    <span onclick="addEmoji('😔')">😔</span>
+                    <span onclick="addEmoji('🤤')">🤤</span>
+                    <span onclick="addEmoji('🤢')">🤢</span>
+                    <span onclick="addEmoji('🤧')">🤧</span>
+                    <span onclick="addEmoji('🥺')">🥺</span>
+                    <span onclick="addEmoji('🤩')">🤩</span>
+                    <span onclick="addEmoji('🥳')">🥳</span><br>
+    
+                    <span onclick="addEmoji('😤')">😤</span>
+                    <span onclick="addEmoji('😅')">😅</span>
+                    <span onclick="addEmoji('🥵')">🥵</span>
+                    <span onclick="addEmoji('🥶')">🥶</span>
+                    <span onclick="addEmoji('😻')">😻</span>
+                    <span onclick="addEmoji('💀')">💀</span>
+                    <span onclick="addEmoji('👻')">👻</span>
+                    <span onclick="addEmoji('🤖')">🤖</span><br>
+    
+                    <span onclick="addEmoji('🦄')">🦄</span>
+                    <span onclick="addEmoji('🐱')">🐱</span>
+                    <span onclick="addEmoji('🐶')">🐶</span>
+                    <span onclick="addEmoji('🐷')">🐷</span>
+                    <span onclick="addEmoji('🐸')">🐸</span>
+                    <span onclick="addEmoji('🐵')">🐵</span>
+                    <span onclick="addEmoji('🦊')">🦊</span>
+                    <span onclick="addEmoji('🐮')">🐮</span><br>
+    
+                    <span onclick="addEmoji('🐼')">🐼</span>
+                    <span onclick="addEmoji('🦁')">🦁</span>
+                    <span onclick="addEmoji('🦄')">🦄</span>
+                    <span onclick="addEmoji('🦒')">🦒</span>
+                    <span onclick="addEmoji('🐧')">🐧</span>
+                    <span onclick="addEmoji('🐦')">🐦</span>
+                    <span onclick="addEmoji('🐤')">🐤</span>
+                    <span onclick="addEmoji('🦋')">🦋</span><br>
+    
+                    <span onclick="addEmoji('🐞')">🐞</span>
+                    <span onclick="addEmoji('🐌')">🐌</span>
+                    <span onclick="addEmoji('🐍')">🐍</span>
+                    <span onclick="addEmoji('🦎')">🦎</span>
+                    <span onclick="addEmoji('🦀')">🦀</span>
+                    <span onclick="addEmoji('🐡')">🐡</span>
+                    <span onclick="addEmoji('🦑')">🦑</span>
+                    <span onclick="addEmoji('🐙')">🐙</span><br>
+    
+                    <span onclick="addEmoji('🐚')">🐚</span>
+                    <span onclick="addEmoji('🦞')">🦞</span>
+                    <span onclick="addEmoji('🦧')">🦧</span>
+                    <span onclick="addEmoji('🦦')">🦦</span>
+                    <span onclick="addEmoji('🦡')">🦡</span>
+                    <span onclick="addEmoji('🦌')">🦌</span>
+                    <span onclick="addEmoji('🦔')">🦔</span>
+                    <span onclick="addEmoji('🐾')">🐾</span>
+                    <hr>
+                </div>
+                <textarea id="message-input" rows="1" placeholder="输入消息..."></textarea>
+                <button type="submit" id="send-button">发送</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/select_avatar.js') }}"></script>
+</body>
+</html>
